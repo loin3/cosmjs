@@ -10,6 +10,7 @@ and this project adheres to
 
 - @cosmjs/stargate: Add `makeMultisignedTxBytes` which is like
   `makeMultisignedTx` but returns bytes ready to broadcast ([#1176]).
+- @cosmjs/math: Add `{Uint32,Int53,Uint53,Uint64}.toBigInt` converter methods.
 
 [#1176]: https://github.com/cosmos/cosmjs/pull/1176
 
