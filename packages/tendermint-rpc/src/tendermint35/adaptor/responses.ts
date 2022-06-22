@@ -17,7 +17,6 @@ import {
   assertString,
   dictionaryToStringMap,
   may,
-  optional,
 } from "../encodings";
 import { hashTx } from "../hasher";
 import * as responses from "../responses";
@@ -81,8 +80,8 @@ interface RpcAbciQueryResponse {
 
 function decodeAbciQuery(data: RpcAbciQueryResponse): responses.AbciQueryResponse {
   return {
-    key: fromBase64(optional(data.key, "")),
-    value: fromBase64(optional(data.value, "")),
+    key: fromBase64(data.key),
+    value: fromBase64(data.value ?? ""),
     proof: may(decodeQueryProof, data.proofOps),
     height: may(apiToSmallInt, data.height),
     code: may(apiToSmallInt, data.code),
@@ -97,13 +96,13 @@ function decodeAbciQuery(data: RpcAbciQueryResponse): responses.AbciQueryRespons
  */
 interface RpcEventAttribute {
   readonly key: string;
-  readonly value: string;
+  readonly value?: string;
 }
 
 function decodeEventAttribute(attribute: RpcEventAttribute): responses.EventAttribute {
   return {
     key: assertNotEmpty(attribute.key),
-    value: optional(attribute.value, ""),
+    value: attribute.value ?? "",
   };
 }
 
@@ -140,13 +139,13 @@ interface RpcTxData {
 
 function decodeTxData(data: RpcTxData): responses.TxData {
   return {
-    code: apiToSmallInt(assertNumber(optional<number>(data.code, 0))),
+    code: apiToSmallInt(assertNumber(data.code ?? 0)),
     codeSpace: data.codespace,
     log: data.log,
     data: may(fromBase64, data.data),
     events: data.events ? decodeEvents(data.events) : [],
-    gasWanted: apiToSmallInt(optional<string>(data.gas_wanted, "0")),
-    gasUsed: apiToSmallInt(optional<string>(data.gas_used, "0")),
+    gasWanted: apiToSmallInt(data.gas_wanted ?? "0"),
+    gasUsed: apiToSmallInt(data.gas_used ?? "0"),
   };
 }
 
